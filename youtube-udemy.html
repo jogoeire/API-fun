@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>  
+</head>
+<body>
+    
+
+<!--*********************  (⌐■_■) - Learnings  ****************************
+L
+1: When I had my form element inside a form tag my promise (then?) was pointless as for refreshes the page so I don't get to see my data returned
+https://stackoverflow.com/questions/50360642/submitting-a-form-with-submit-using-promise
+2: I thought ASYNC function might help but in the end it wasnt the issue and both functions below work... so im not exactly sure what the difference is. Need to look in to Async. 
+(yes bother function do different stuff with the data but that incendental)
+3: In the end I was using the wrong endpoint and when I went back to Googl's API docs I found some cool interactive demos so ended up grabbing that code 
+instead. 
+4: I had to go a lot deeper into the JSON to find that videoID. 
+-->
+    
+
+<!--************  WEE EXPERIMENT TO TEST DOT NOTATION ON LOCAL JSON - WORKS! ************ -->
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script>
+   $.getJSON("returned.json", function(json) {
+    //console.log("My local JSON file that emulates the real one:"); 
+    //console.log(json); 
+    console.log(json.items[3].id);
+
+
+// write code to loop through. 
+for(x = 0; x < json.items.length; x++)
+   {
+  myiframe = "<iframe width='360' height='215' src='https://www.youtube.com/embed/" + json.items[x].id + " frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>"
+  document.getElementById("myvideos").insertAdjacentHTML('beforeend', myiframe);
+   }
+
+});
+</script>
+-->
+
+<!--************  END ************ -->
+
+
+
+
+
+<!--*********************  ⊂(◉ ‿ ◉)つ - Working ****************************-->
+
+<!--*********************  DON'T FORGET - CONFIG ****************************
+Your VisualStudioCode server uses http://127.0.0.1:5500 but you had to mask that in the host file so
+that the browser sees http://www.myserver.com:5500, which Google prefers. You need to change that manually in your address bar. 
+-->
+
+
+<script src="https://apis.google.com/js/api.js"></script>
+<!--API Key etc-->
+<script src="config.js"></script>
+
+   <script>
+
+     /**
+      * Sample JavaScript code for youtube.playlistItems.list
+      * See instructions for running APIs Explorer code samples locally:
+      * https://developers.google.com/explorer-help/guides/code_samples#javascript
+      */
+   
+     function authenticate() {
+       return gapi.auth2.getAuthInstance()
+           .signIn({scope: "https://www.googleapis.com/auth/youtube.readonly"})
+           .then(function() { console.log("Sign-in successful"); },
+                 function(err) { console.error("Error signing in", err); });
+     }
+     function loadClient() {
+       gapi.client.setApiKey(myapikey);
+       return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+           .then(function() { console.log("GAPI client loaded for API"); },
+                 function(err) { console.error("Error loading GAPI client for API", err); });
+     }
+     // Make sure the client is loaded and sign-in is complete before calling this method.
+     function execute() {
+       return gapi.client.youtube.playlistItems.list({
+         "part": "snippet",
+         "maxResults": 49,
+         "playlistId": myplaylistid
+       })
+           .then(function(response) {
+
+/*********************  ⊂(◉ ‿ ◉)つ - My Main Code ****************************/
+
+                   // Handle the results here (response.result has the parsed body).
+                  console.log("Response", response);
+                  console.log(response.result.items[3].id); // i didnt need to parse in the end. not sure why result contains a parsed body? (see google last comment)
+                   //var parsedjson = JSON.parse(response.body);  // didn't need to this in end
+                   //console.log(parsedjson.items[3].id);
+
+                   for(x = 0; x < response.result.items.length; x++)
+                     {
+                      //console.log(response.result.items[x].snippet.resourceId.videoId);
+
+                      myiframe = response.result.items[x].snippet.title + "<br><iframe width='560' height='315' src='https://www.youtube.com/embed/" + response.result.items[x].snippet.resourceId.videoId + "' frameborder='0'></iframe><br><br>"
+                      document.getElementById("myvideos").insertAdjacentHTML('beforeend', myiframe);
+                    }
+
+                 },
+                 function(err) { console.error("Execute error", err); });
+     }
+     gapi.load("client:auth2", function() {
+       gapi.auth2.init({client_id: myclientide});
+     });
+   </script>
+   <button onclick="authenticate().then(loadClient)">authorize and load</button>
+   <button onclick="execute()">execute</button>
+
+
+
+   <div id="myvideos"></div>
+
+
+
+<!--**********************   ʕノ•ᴥ•ʔノ ︵ ┻━┻   Leftovers  *********************************************
+Actually the code below works but I abandoned for some demo code from google API
+Below is a promise and async-await versions
+***************************************************************************************-->
+
+
+
+ <!--
+<input type="text" placeholder="search" id="searchinput" value="work"><br>
+<button onclick="mySearch().then(data => console.log(data));">Button using async function</button>
+<button onclick="mySearch2();">Button using normal function</button>
+
+
+   <script>
+async function mySearch() 
+{
+const searchTerm = document.getElementById("searchinput").value;
+   //const myurl = "https://www.googleapis.com/youtube/v3/search/?part=snippet&key=AIzaSyC6DCpm8D-HKzfNU55SAYF1fMYwauNQ0q4&q=" + searchTerm + "&maxResults=4";
+   const myurl = "https://www.googleapis.com/youtube/v3/search/?part=snippet&key=AIzaSyC6DCpm8D-HKzfNU55SAYF1fMYwauNQ0q4&q=" + searchTerm + "&maxResults=4";
+ let response = await fetch(myurl);
+ let data = await response.json()
+ return data;
+}
+
+function mySearch2() {
+
+   console.log("hello1");
+   const searchTerm = document.getElementById("searchinput").value;
+   const myurl = "https://www.googleapis.com/youtube/v3/search/?part=snippet&key=AIzaSyC6DCpm8D-HKzfNU55SAYF1fMYwauNQ0q4&q=" + searchTerm + "&maxResults=4";
+        
+   fetch(myurl).then(function(response) {
+   //document.getElementById("content1").innerHTML = "test"; 
+   return response.json();
+ })
+ .then(function(myJson) {
+   console.log(JSON.stringify(myJson));
+ });   
+   }
+</script>     
+    
+-->
+
+    </body>
+</html>
+
+      
+<!-- GoodReads for later
+ https://www.goodreads.com/review/list/41832207.xml?key=VubiyrViTvm6Ns9aaqmcKQ&v=2&shelf=business --> 
+   
