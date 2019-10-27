@@ -1,0 +1,89 @@
+
+
+<body>
+<head>
+<script>
+
+console.log("Note the order in which number appear")
+console.log("--")
+
+
+console.log("TOPIC: EXECUTION CONTEXT")
+/******* EXECUTION CONTEXT ********/
+
+var name = "boxever";
+
+function func1st() {
+  console.log("1-1-func1st-execution-context");
+  func2nd();
+  console.log('1-2-func1st-execution-context');
+}
+function func2nd() {
+  console.log('2-1-func1st-execution-context');
+  func3rd();
+  console.log('2-2-func1st-execution-context-REVERSING LIKE A CAR! NO SHORTCUTS ');
+}
+function func3rd() {
+  console.log('3-1-func1st-execution-context');
+}
+
+func1st();
+
+/******* SCOPE CHAIN ********/
+// not the direction! lexical scoping happen in js. 
+// this mean… functions within another function get access to the variable of the outer parent functions.
+
+console.log("TOPIC: SCOPE CHAIN")
+
+var a = "HiGlobalVar-";
+scope1stOuterFunc();
+
+function scope1stOuterFunc() {
+  console.log('4-Outer-func');
+  //console.log(c); <- this would not work
+  var b = 'HiOuterVar-';
+  scope2ndInnerFunc();
+    function scope2ndInnerFunc() {
+      var c = 'HiInnerVar';
+      console.log("5-Inner-func---" + (a + b + c) + "--LEXICAL SCOPING = CHILDREN CAN ACCESS PARENTS NOT VICE VERSA");
+      Scope3rdDiffFunc();
+    }
+}
+
+function Scope3rdDiffFunc() {
+  var d = 'HiTotallyDiffFunction-';
+  console.log("6-1-" + (d + a) + "BUT THIS FUNC COULD NOT PRINT B & C. ORDER DOESN'T MATTER, ONLY SCOPE.");
+}
+
+/***** THIS VARIABLE ******/
+//The third and final part of the creation phase 
+// (before the execution phase) is the setting of the THIS variable
+
+funcUsingThis("HiThis")
+
+function funcUsingThis(roxpass) {
+  console.log("7-1-printing-variable---" + roxpass);
+  console.log("7-2-printing-this---" + this + "PRINTS GLOBAL OBJECT WITHIN STANDARDS FUNCTION");
+}
+
+var funcObLiteral = {
+  name: "Rob",
+  myMethod: function() {
+    console.log("8-1-printing-this---" + this + "WITHIN A METHOD OF JS OBJECT LITERAL. WORKS!!! ");
+  }
+}
+funcObLiteral.myMethod();
+
+/***** EVENT LOOP ******/
+function main(){
+  console.log('9-1-Event-Loop--InsideMainFunction');
+  setTimeout(
+    function display(){ console.log('9-2-Event-Loop--Inside-SetTimeOut'); }
+  ,0);
+	console.log('9-3-Event-Loop--After-SetTimeOut-WOOOW! BACK OF THE QUEUE. SEND OUT TO BROWSER API.');
+}
+main();
+
+</script>
+</head>
+</body>

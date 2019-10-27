@@ -1,0 +1,146 @@
+
+
+<body>
+<head>
+<script>
+/******* WHICH SHOULD YOU USE? DECLARATION OR EXPRESSIONS?
+I personally prefer function expressions, and use them extensively in all of my code. 
+I like them for one reason: they force more structure into the code base.
+https://gomakethings.com/function-expressions-vs-function-declarations/
+
+The function expression is the working horse in JavaScript. 
+Most of the time developer deals with this type of function declaration alongside the arrow function 
+********/
+
+
+
+/*******  FUNCTION DECLARATION  ********/
+//debugger;
+b = roxfunction1("1-hoisted");
+console.log(b + "-2-before-function-declaration");
+
+function roxfunction1 (num) {
+    console.log(num + "-inside-function-declaration");
+    return num;
+}
+a = roxfunction1("2");
+console.log(a + "-2-after-function-declaration");
+
+
+/*******  FUNCTION EXPRESSION - 3 types 
+1: Assigned to a variable as an object count = function(...) {...}
+2: Create a method on an object sum: function() {...}
+3: Use the function as a callback .reduce(function(...) {...})  ********/
+
+const roxFuncExpAssigned = function(array) { // Function expression
+  console.log(array[0] + "-function-expression-Type1-assigned");
+}
+roxFuncExpAssigned([3]);
+
+const roxFuncExpMethods = {
+  numbers: [1, 3],
+  sum: function() { // Function expression
+    return this.numbers.reduce(function(acc, num) { // func. expression
+        // The reduce() method reduces the array to a single value.
+        // The reduce() method executes a provided function for each value of the array (from left-to-right).
+      console.log(acc + num + "-function-expression-Type2&3-method-and-callback");
+      return acc + num;
+    });
+  }
+}
+roxFuncExpMethods.sum();    // => 14
+
+/*******  ANONYMOUS FUNCTION   ********/
+(function() {console.log(5 + "-anonymous-self-invoking-function");})();
+
+!function() {console.log(6 + "-anonymous-self-invoking-function-style2!");}();
+
+function run() {
+    console.log(7 + "-the-opposite-for-comparison");
+}
+run();
+
+
+/*******  METHOD DEFINITION - OBJECT LITERAL  ********/
+
+var roxFunObjectLiteral = {
+    // an array literal
+    images: "hello",
+    mymethod: function() { // function
+        console.log(8 + "-method-in-object-literal");
+    }
+};
+roxFunObjectLiteral.mymethod();
+
+
+/*******  SHORTHAND METHOD DEFINITION - OBJECT LITERAL  ********/
+
+var roxFunObjectLiteralShort = {
+    // an array literal
+    images: "hello",
+    mymethod() { // shorthand style!
+        console.log(9 + "-same-but-shorthand-style");
+    }
+};
+roxFunObjectLiteralShort.mymethod();
+
+/*******  OBJECT LITERAL - COMPUTED PROPERTY NAME!   ********/
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names
+// you don't need to have an object literal to do this.
+
+const param = 'roxmethod';
+const num = 1;
+
+const config = {
+  name: "dumdum",
+  [param + num](pass){
+    console.log(pass);
+  }
+};
+config[param + num](10 + "-computed-property(method)-name-with-object-literal");
+
+
+/*******  ARROW FUNCTION   ********/
+//Because functions create their own execution context, 
+//often it is hard to catch the flying around this.
+//ECMAScript 2015 improves this usage by introducing the 
+//arrow function, which takes the context lexically.
+//!! I don't cover this here.
+//By using arrow functions, we avoid having to type the function keyword, 
+//return keyword (it’s implicit in arrow functions), and curly brackets. 
+
+const roxArrowFun = (number) => {
+  console.log(number + "-arrow-function")
+}
+roxArrowFun(11);   
+
+/*******  ARROW FUNCTION - SHORTHAND   ********/
+// Curly brackets aren’t required if only one expression is present. 
+//Sometimes nested short arrow functions are difficult to read. 
+//So the most convinient way to use the short form is a single callback function (without nested ones).
+const roxArrowFunShort = (number) => console.log(number + "-arrow-function-shorthand");
+roxArrowFunShort(12);
+
+/*******  GENERATOR FUNCTION   ********/
+//Generators in JavaScript -- especially when combined with Promises -- are a very powerful tool for asynchronous programming as they mitigate -- if not entirely eliminate -- the problems with callbacks, such as Callback Hell and Inversion of Control.
+// read this also: https://hackernoon.com/javascript-es6-you-dont-really-need-to-learn-generators-96aa2e9114fa
+
+function* roxGenerator() {
+  yield "13-generatator-using-yield";
+  yield "14-generatator-using-yield-again";
+}
+var mygfunc = roxGenerator();
+console.log(mygfunc.next());
+console.log(mygfunc.next());
+
+/*******  USING NEW to create a FUNCTION   ********/
+//It’s rarely used, but sometimes there’s no alternative.
+//The major difference from other ways we’ve seen is that the function is created literally from a string, that is passed at run time.All previous declarations required us, programmers, to write the function code in the script.
+// Syntax: let func = new Function ([arg1, arg2, ...argN], functionBody);
+
+let sum = new Function('a', 'b', 'return a + b');
+console.log("15-using-new-to-create-function" + sum(1, 2) ); // 3
+
+</script>
+</head>
+</body>
