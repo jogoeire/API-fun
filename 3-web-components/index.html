@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./modal.js"></script>
+
+  <style>
+    h4 {
+      color: pink;
+    }
+    </style>
+
+
+</head>
+
+<body>
+
+  <h2>1) Modal web component with vanilla JS.</h2>
+
+  <pp-modal>
+    <h1 slot="header">Information Box</h1>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </pp-modal>
+
+
+  <br><br><br>
+  <h2>2) Robs component</h2>
+
+  <rx-component>
+    <div slot="test1">Test named slot</div>
+    Hopefully this goes into the other slot without a name
+  </rx-component>
+
+  <br><br><br>
+  <h2>3) Regular h4 style in parent</h2>
+<h4>Here is my H4 style</h4>
+
+</body>
+
+</html>
